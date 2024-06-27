@@ -112,8 +112,7 @@ class _HomepageState extends State<Homepage> {
                                                   _textController3.text,
                                               pillType: valueValue,
                                               startTime: timeValueValue);
-                                          // PillModel pillModel = PillModel(pillName2:_textController2.text);
-                                          //PillModel pillModel = PillModel(pillName3:_textController3.text);
+                                        
                                           print(_textController.text);
                                           print(_textController2.text);
                                           print(_textController3.text);
