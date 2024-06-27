@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:untitled1/data.dart';
 import 'package:untitled1/pillModel.dart';
+import 'package:untitled1/services.dart';
 import 'textfield.dart';
 
 class Homepage extends StatefulWidget {
@@ -15,6 +18,31 @@ class _HomepageState extends State<Homepage> {
   ValueNotifier<String> value = ValueNotifier<String>("ml");
   ValueNotifier<TimeOfDay> timeOfDayValue =
       ValueNotifier<TimeOfDay>(const TimeOfDay(hour: 8, minute: 30));
+  final _formKey = GlobalKey<FormState>();
+
+  final UserService _service = UserService();
+  List<UsersModelData?> users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    Logger().d("initState");
+    _service.fetcUsers().then((UsersModel? value) {
+      if (value is UsersModel) {
+        Logger().d(value.toJson());
+        setState(() {
+          users = value.data ?? [];
+        });
+
+        // users.add(value as UsersModelData);
+      }
+      // if (value != null! && value.data != null)
+      //   setState(() {
+      //     users.value.data!;
+      //   });
+      // else {}
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +83,7 @@ class _HomepageState extends State<Homepage> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
-                    height: 530,
+                    height: 560,
                     color: Colors.grey.shade500,
                     padding: EdgeInsets.all(15),
                     child: Column(
@@ -73,36 +101,41 @@ class _HomepageState extends State<Homepage> {
                                       textController3: _textController3,
                                       dropdownvalue: value,
                                       timeOfDayValue: timeOfDayValue,
+                                      formkey: _formKey,
                                       onTap: () {
-                                        PillModel pillModel = PillModel(
-                                            pillName: _textController.text,
-                                            pariodOfDay: _textController2.text,
-                                            howManyHours: _textController3.text,
-                                            pillType: valueValue,
-                                            startTime: timeValueValue);
-                                        // PillModel pillModel = PillModel(pillName2:_textController2.text);
-                                        //PillModel pillModel = PillModel(pillName3:_textController3.text);
-                                        print(_textController.text);
-                                        print(_textController2.text);
-                                        print(_textController3.text);
-                                        print(valueValue);
-                                        print(timeValueValue);
+                                        if (_formKey.currentState!.validate()) {
+                                          PillModel pillModel = PillModel(
+                                              pillName: _textController.text,
+                                              pariodOfDay:
+                                                  _textController2.text,
+                                              howManyHours:
+                                                  _textController3.text,
+                                              pillType: valueValue,
+                                              startTime: timeValueValue);
+                                          // PillModel pillModel = PillModel(pillName2:_textController2.text);
+                                          //PillModel pillModel = PillModel(pillName3:_textController3.text);
+                                          print(_textController.text);
+                                          print(_textController2.text);
+                                          print(_textController3.text);
+                                          print(valueValue);
+                                          print(timeValueValue);
 
-                                        setState(() {
-                                          pillModelList.add(pillModel);
-                                          // pillModelList.add(pillModel1);
-                                          // pillModelList.add(pillModel2);
-                                        });
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              );
-                                            });
+                                          setState(() {
+                                            pillModelList.add(pillModel);
+                                            // pillModelList.add(pillModel1);
+                                            // pillModelList.add(pillModel2);
+                                          });
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                );
+                                              });
 
-                                        //Navigator.of(context).pop();
+                                          //Navigator.of(context).pop();
+                                        }
                                       },
                                     );
                                   });
@@ -118,7 +151,7 @@ class _HomepageState extends State<Homepage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  height: 300,
+                  height: 415,
                   color: Colors.grey.shade500,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -147,9 +180,29 @@ class _HomepageState extends State<Homepage> {
                                 Text(
                                     "Kaç saatte bir: ${pillModel.howManyHours ?? ''}"),
                                 Text("Türü: ${pillModel.pillType ?? ''}"),
-                                Text("Başlangıç Zamanı: ${pillModel.startTime!.hour.toString() ?? ''} : ${pillModel.startTime!.minute.toString() ?? ''}"),
-                                
+                                Text(
+                                    "Başlangıç Zamanı: ${pillModel.startTime!.hour.toString() ?? ''} : ${pillModel.startTime!.minute.toString() ?? ''}"),
                                 const SizedBox(height: 14),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ListTile(
+                                  title: Text(" ${users[index]!.firstName} "),
+                                  subtitle: Text("${users[index]!.email!}"),
+                                  leading: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        "${users[index]!.avatar!}"),
+                                  ),
+                                ),
                               ],
                             );
                           },
