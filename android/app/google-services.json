@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "875986561143",
+    "project_id": "ilactakipflutter",
+    "storage_bucket": "ilactakipflutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875986561143:android:b1b26968da7c0500bb3e72",
+        "android_client_info": {
+          "package_name": "com.example.untitled1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDc_CvAAXZ7zUqUhlWojHGR2DUXXqibLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
